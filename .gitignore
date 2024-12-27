@@ -1,0 +1,4 @@
+docker-compose copy.yaml
+.terraform
+node/node_modules
+ul-azure-events
