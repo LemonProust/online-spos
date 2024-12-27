@@ -1,0 +1,75 @@
+services:
+  traefik:
+    image: traefik
+    ports: 
+     - "80:80"
+     - "8080:8080"
+    volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+    command: 
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`traefik`)"
+      - "traefik.http.routers.api.services=api@internal"
+  
+  webserver1:
+    build:
+      context: ./nginx/webserver1
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webserver1.rule=Host(`webserver1`)"
+      - "traefik.http.routers.webserver1.entrypoints=web"
+      - "traefik.http.services.webserver1.loadbalancer.server.port=80"
+
+  webserver2:
+    build:
+      context: ./nginx/webserver2
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webserver2.rule=Host(`webserver2`)"
+      - "traefik.http.routers.webserver2.entrypoints=web"
+      - "traefik.http.services.webserver2.loadbalancer.server.port=80"
+
+  webserver3:
+    build:
+      context: ./nginx/webserver3
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webserver3.rule=Host(`webserver3`)"
+      - "traefik.http.routers.webserver3.entrypoints=web"
+      - "traefik.http.services.webserver3.loadbalancer.server.port=80"
+
+  nodejs:
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      EVENTHUB_CONNECTION_STRING: "MY_EVENT_HUB_CONNECTION_STRING"
+      EVENTHUB_NAME: "eventhub-osops"
+      MYSQL_HOST: "mysql"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "p@$$w0rd"
+      MYSQL_DATABASE: "orders_db"
+
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: "p@$$w0rd"
+      MYSQL_DATABASE: "orders_db"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+volumes:
+  mysql_data:
