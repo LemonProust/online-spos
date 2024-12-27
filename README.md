@@ -43,20 +43,19 @@ The OMS is designed to manage the lifecycle of customer orders for an e-commerce
 
 ```
 .
-├── terraform-azure-oms/
+├── terraform-azure-osops/
 │   ├── main.tf
 │   ├── variables.tf
 │   ├── outputs.tf
 │   ├── provider.tf
-├── docker-compose.yml
-├── ansible/
+|   ├── docker-compose.yml
+│   ├── ansible/
 │   ├── playbook.yml
-│   ├── roles/
-│       ├── traefik/
-│       ├── nginx/
-│       ├── nodejs/
-│       ├── mysql/
-├── README.md
+│   ├── traefik/
+│   ├── nginx/
+│   ├── nodejs/
+│   ├── mysql/
+│   ├── README.md
 ```
 
 ---
